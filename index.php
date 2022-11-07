@@ -12,8 +12,8 @@
     if (isset($_POST["columns"])){ //Comprobamos que existe
         $columns = $_POST["columns"];
     }
-
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -32,8 +32,8 @@
     <h1>Práctica 1 Desarrollo de Interfaces</h1>
     <h2>Alumno: Martín Antonio Córdoba Getar</h2>
     <!-- Para que un usuario introduzca la cantidad de columnas y filas manualmente, debemos crear un formulario -->
-    <form method = "post" action = "index.php"> <!-- method get o post, ver www.w3schools.com/tags/att_form_method.asp. Action es el documento a donde mandamos la info para procesarla-->
-                                                <!-- añadimos la cabecera al principio de este documento que es el que va a procesar el formulario -->
+    <form method = "post" action = "index.php"> <!-- method get o post, ver www.w3schools.com/tags/att_form_method.asp. Action es el documento a donde mandamos la info para procesarla, en este caso este mismo documento php-->
+                                                <!-- añadimos a la cabecera al principio de este documento lo que va a procesar el formulario -->
         <label for="rows">Filas</label><input type="number" name="rows" id="rows" value="<?php echo $rows ?>">
         <label for="columns">Columnas</label><input type="number" name="columns" id="columns" value="<?php echo $columns ?>">
         <input type="submit" value="Enviar" name="enviar" id="enviar">
@@ -42,8 +42,7 @@
     <!--
     No forzar nunca saltos de linea en html, es mala práctica. Hacerlo luego con CSS
     Ver más abajo, el comentario sobre la estructura de tabla que queremos crear
-    Creamos una matriz (tabla) indicando el número de columnas y filas
-    Ejemplo de estructura de tabla que queremos -->
+    Creamos una matriz (tabla) indicando el número de columnas y filas -->
     
     <table border="1">
         <!-- Cabecera de la tabla, una única fila (1 tr). tantas th como columnas haya -->
