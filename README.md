@@ -5,7 +5,7 @@
 
 ## Procedimiento
 El proyecto constará de varias prácticas pequeñas llamadas 1.1, 1.2, ... Para cada práctica
-se creará una rama con el nombre practica_11, practica_12, practica_13,... en donde el número
+se creará una rama con el nombre practica_1.1, practica_1.2, practica_1.3,... en donde el número
 de práctica variará en función de la práctica que estemos realizando. Una vez que hayamos
 concluido la práctica se hará un MERGE con la rama MASTER, de tal manera que master siempre
 contendrá lo último operativo. Esto no quita para que el alumno cree otras ramas a partir de
@@ -15,7 +15,7 @@ La corrección se hará desde Bitbucket, por lo que se ha de compartir el proyec
 
 ## Descripción 1.1
 Hay que crear un index.php con el que montaremos una tabla dinámica, ayudándonos de los bucles de php,
-con la estructura que muestra la imagen.
+con la estructura que muestra la tabla:
 
 |Campo 1         |Campo 2         |Campo 3         |Campo 4         |
 |----------------|----------------|----------------|----------------|
