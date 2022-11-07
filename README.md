@@ -28,3 +28,10 @@ El número de filas y columnas dependerá de dos variables definidas en la cabec
 
 Aunque es un archivo php, su contenido será un documento HTML5 bien formado, con los scripts de
 php necesarios insertados en el código.
+
+## Descripción 1.2
+Como continuación a la práctica 1.1, vamos a crear un pequeño formulario, en la parte superior de la
+página, con dos campos: filas y columnas, y un botón de submit.
+
+Según los datos que pongamos en las casillas, la tabla se redibujará al enviarlos. Tanto en la primera
+carga como si los números que nos dan son menores a 1, se pondrán los valores por defecto 2x2.
