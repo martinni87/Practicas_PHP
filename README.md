@@ -21,7 +21,7 @@ con la estructura que muestra la tabla:
 |----------------|----------------|----------------|----------------|
 |Fila 1 Columna 1|Fila 1 Columna 2|Fila 1 Columna 3|Fila 1 Columna 4|
 
-etc...
+etc... hasta cuatro columnas y 6 filas
 
 Para conseguirlo tendremos que anidar dos bucles, uno para las filas y otro para las columnas.
 El número de filas y columnas dependerá de dos variables definidas en la cabecera del documento.
