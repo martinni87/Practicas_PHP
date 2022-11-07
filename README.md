@@ -35,3 +35,16 @@ página, con dos campos: filas y columnas, y un botón de submit.
 
 Según los datos que pongamos en las casillas, la tabla se redibujará al enviarlos. Tanto en la primera
 carga como si los números que nos dan son menores a 1, se pondrán los valores por defecto 2x2.
+
+## Descripción 1.3
+En este ejercicio vamos a practicar las conexiones a BD mediante la clase PDO. Para ello vamos a crear
+una conexión a la BD universidad y obtener el listado de alumnos de la BD mostrándolo en una tabla,
+tal como muestra la imagen.
+
+![Ejemplo1.3](./img/pic_ejemplo_1_3.JPG "Ejemplo 1.3.")
+
+Lo vamos a hacer en el archivo index de la rama descartando todo el código que teníamos. Como siempre, el documento será un HTML5 bien formado aunque con extensión PHP para embeber nuestros scripts.
+
+De las distintas formas de hacerlo que tenéis en el manual adjunto en moodle, vamos a realizarlo con el método "prepare" ya que aporta robustez, y en un cuanto a la forma de rellenar la tabla se deja a criterio del alumno.
+
+Para no tener problemas con la codificación alfanumérica de la BD tendréis que forzar que la conexión a la BD se haga con UTF-8.
