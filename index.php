@@ -1,30 +1,20 @@
-<!-- Añadimos a la cabeza del documento este fragmento de código php que procesará los datos del formulario -->
 <?php
-    /*echo "<pre>";
-    print_r($_POST);
-    echo "</pre>";*/
+    //Atributos para PDO
+    $hostdbname = 'mysql:host=localhost;dbname=universidad';
+    $username = 'root';
+    $password = '';
 
-    $rows = 2; //En la primera carga forzamos tabla 2x2
-    $columns = 2; //En la primera carga forzamos tabla 2x2
+    //Hacemos un try-catch para capturar errores en caso de que la conexión falle de alguna manera.
+    try{
+        //Creando conexión a Base de datos
+        $con = new PDO($hostdbname,$username,$password,array(PDO::MYSQL_ATTR_INIT_COMMAND => "SET NAMES utf8")); 
+        $con -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    if (isset($_POST["rows"])){ //Comprobamos que existe
-        if ($_POST["rows"] < 1){ //Caso valor menor a 1, asignamos valor = 2
-            $rows = 2;
-        }
-        else{
-            $rows = $_POST["rows"]; //Caso valor >= 1, asignamos valor desde array $_POST
-        }
-    }
-    if (isset($_POST["columns"])){//Comprobamos que existe
-        if ($_POST["columns"] < 1){ //Caso valor menor a 1, asignamos valor = 2
-            $columns = 2;
-        }
-        else{
-            $columns = $_POST["columns"]; //Caso valor >= 1, asignamos valor desde array $_POST
-        }
-    }
+        //Definimos el stmt con prepare. El orden de los valores que devolverá el SELECT lo definimos aquí.
+        $stmt = $con -> prepare('SELECT dni,nombre,apellido_1,apellido_2,localidad,fecha_nacimiento FROM alumno');
+        $stmt->execute();
+    //No cierro la llave del try aquí, va más abajo con el catch para darle continuidad y que no de error de catch sin try.
 ?>
-
 <!-- Cabecera del documento HTML -->
 <!DOCTYPE html>
 <html lang="es">
@@ -36,47 +26,54 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <title>Práctica 1 Desarrollo de Interfaces</title>
+    <!-- Estilos para la tabla, esto es mejor crearlo en archivos CSS aparte y lo hago solo por este paquete de prácticas -->
+    <style>
+        table, tr, th, td
+        {
+            border: 1px solid black;
+            text-align: center;
+        }
+    </style>
 </head>
+<!-- Cuerpo HTML -->
 <body>
+    <!-- Títulos -->
     <h1>Práctica 1 Desarrollo de Interfaces</h1>
     <h2>Alumno: Martín Antonio Córdoba Getar</h2>
-    <!-- Para que un usuario introduzca la cantidad de columnas y filas manualmente, debemos crear un formulario -->
-    <form method = "post" action = "index.php"> <!-- method get o post, ver www.w3schools.com/tags/att_form_method.asp. Action es el documento a donde mandamos la info para procesarla, en este caso este mismo documento php-->
-                                                <!-- añadimos a la cabecera al principio de este documento lo que va a procesar el formulario -->
-        <fieldset>
-            <legend>Datos para la tabla</legend>
-            <label for="rows">Filas</label><input type="number" name="rows" id="rows" value="<?php echo $rows ?>">
-            <label for="columns">Columnas</label><input type="number" name="columns" id="columns" value="<?php echo $columns ?>">
-            <input type="submit" value="Enviar" name="enviar" id="enviar">
-        </fieldset>
-    </form>
-    <br> <!-- No es buena práctica usar saltos de línea en html, mejor hacerlo mediante CSS. Se deja así porque esta práctica se enfoca solo en php -->
-    <!-- Creamos una matriz (tabla) indicando el número de columnas y filas -->
-    
-    <table border="1"> <!-- Tampoco es buena práctica poner border aquí, es mejor en CSS -->
-        <!-- Cabecera de la tabla, una única fila (1 tr). tantas th como columnas haya -->
+    <h3>Práctica 1.3 DI</h3>
+    <p>Listado de alumnos</p>
+    <!-- Estructura de la tabla (solo cabecera) -->
+    <table>
         <thead>
             <tr>
-                <?php
-                    for ($i=0;$i<$columns;$i++){
-                        echo '<th>Campo '.($i+1).'</th>';
-                    }
-                ?>
+                <th>DNI</th>
+                <th>Nombre</th>
+                <th>Apellido 1</th>
+                <th>Apellido 2</th>
+                <th>Localidad</th>
+                <th>F. Nacimiento</th>
             </tr>
         </thead>
 
-        <!-- Cuerpo de la tabla, tantas tr como filas haya, tantas td como columnas haya -->
-        <tbody>
-            <?php
-                for ($i = 0; $i<$rows;$i++){
-                    echo '<tr>';
-                    for ($j = 0; $j < $columns; $j++){
-                        echo '<td>Fila '.($i+1).' Columna '.($j+1).'</td>';
-                    }
-                    echo '</tr>';
-                }    
-            ?>
-        </tbody>
+    <?php
+            // Abrimos cuerpo de la tabla
+            echo '<tbody>';
+            while($datos = $stmt -> fetch(PDO::FETCH_ASSOC)){
+                echo '<tr>'; // Abrimos fila
+                foreach ($datos as $key => $value) {
+                    echo '<td>' . $value . '</td>'; // En cada iteración pintamos un valor del array, el orden lo da el SELECT del $stmt
+                }
+                echo '</tr>'; //Cerramos fila
+            }
+            // Cerramos cuerpo de la tabla
+            echo '</tbody>';
+
+        //Si try falla, se lanza excepción PDO
+        }catch(PDOException $e){
+            echo 'Error en la conexión a la BD: ' . $e -> getMessage();
+        }
+    ?>
     </table>
+
 </body>
 </html>
