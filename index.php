@@ -40,7 +40,14 @@
     <!-- Títulos -->
     <h1>Práctica 1 Desarrollo de Interfaces</h1>
     <h2>Alumno: Martín Antonio Córdoba Getar</h2>
-    <h3>Práctica 1.3 DI</h3>
+    <h3>Práctica 1.4 DI</h3>
+
+    <form action="index.php" method="post">
+        <fieldset>
+            
+        </fieldset>
+    </form>
+
     <p>Listado de alumnos</p>
     <!-- Estructura de la tabla (solo cabecera) -->
     <table>
