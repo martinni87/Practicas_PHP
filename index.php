@@ -14,7 +14,6 @@
         $con -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         //Array que recoge parámetros sólo si el usuario ha utilizado un determinado filtro.
-        $arr_where = array();
         $parametros = array();
 
         //Creamos una variable para realizar la query. Esta variable es un String va cambiando según si el usuario usa un filtro o no
@@ -80,7 +79,7 @@
         <fieldset>
             <legend>Filtros de búsqueda</legend>
             <label for="dni">DNI:</label><input type="text" name="dni" id="dni" placeholder="01234567A" title="Escribe un DNI">
-            <label for="nombre">Nombre:</label><input type="text" name="nombre" id="nombre" placeholder="Pep" title="Escribe un nombre">
+            <label for="nombre">Nombre:</label><input type="text" name="nombre" id="nombre" title="Escribe un nombre">
             <label for="localidad">Localidad:</label><input type="text" name="localidad" id="licalidad" placeholder="Elche" title="Escribe una localidad">
             <label for="fecha_nacimiento">F. Nacimiento:</label><input type="date" name="fecha_nacimiento" id="fecha_nacimiento" placeholder="20/05/1991" title="Escribe una fecha en formato DD/MM/AAAA">
             <input type="submit" value="Enviar" name="enviar" id="enviar">
