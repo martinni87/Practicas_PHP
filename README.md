@@ -48,3 +48,16 @@ Lo vamos a hacer en el archivo index de la rama descartando todo el código que 
 De las distintas formas de hacerlo que tenéis en el manual adjunto en moodle, vamos a realizarlo con el método "prepare" ya que aporta robustez, y en un cuanto a la forma de rellenar la tabla se deja a criterio del alumno.
 
 Para no tener problemas con la codificación alfanumérica de la BD tendréis que forzar que la conexión a la BD se haga con UTF-8
+
+## Descripción 1.4
+Se seguirá el mismo procedimiento que con las prácticas anteriores, creando una nueva rama llamada práctica1.4.
+
+En este ejercicio vamos a crear un formulario que permita el envío de datos para la realización de filtros, aplicados con ***where*** a la query, enviándolos tal como se hizo en la práctica 1.2.
+
+Lo vamos a hacer en el archivo index completando lo realizado en la práctica 1.3.
+
+![Ejemplo1.4](./img/pic_ejemplo_1_4.JPG "Ejemplo 1.4.")
+
+De las distintas formas de hacerlo que tenéis en el manual adjunto en moodle, vamos a realizarlo con el método "prepare" ya que aporta mayor robustez y parametrizando la query con un array en el execute.
+
+Las búsquedas se realizarán aplicando AND en el WHERE, de tal manera que si busco por nombre "Juan" y localidad "Arneva" tendrá que cumplir ambos criterios.
