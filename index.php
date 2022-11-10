@@ -108,50 +108,55 @@
             <button type='submit' name='reset' id='reset'>Limpiar</button> <!-- Si aplico type submit en lugar de reset puedo variar el valor según se presiona enviar o limpiar de forma que con isset($_POST['reset'] pueda aplicar $_POST = [] y vaciar los filtros -->
         </fieldset>
     <?php 
-    if (isset($_POST['submit'])){
-        echo "
-        <p>Listado de alumnos</p>
-        <!-- Estructura de la tabla (solo cabecera) -->
-        <table>
-            <thead>
-                <tr>
-                    <th>DNI</th>
-                    <th>Nombre</th>
-                    <th>Apellido 1</th>
-                    <th>Apellido 2</th>
-                    <th>Localidad</th>
-                    <th>F. Nacimiento</th>
-                </tr>
-            </thead>
-                // Estructura de la tabla (solo cuerpo)
-                echo '<tbody>';
-                while($datos = $stmt -> fetch(PDO::FETCH_ASSOC)){
-                    echo '<tr>'; // Abrimos fila
-                    foreach ($datos as $key => $value) {
-                        echo '<td>' . $value . '</td>'; // En cada iteración pintamos un valor del array, el orden lo da el SELECT del $stmt
+        if (isset($_POST['submit'])){
+            echo "
+            <p>Listado de alumnos</p>
+            <!-- Estructura de la tabla (solo cabecera) -->
+            <table>
+                <thead>
+                    <tr>
+                        <th>DNI</th>
+                        <th>Nombre</th>
+                        <th>Apellido 1</th>
+                        <th>Apellido 2</th>
+                        <th>Localidad</th>
+                        <th>F. Nacimiento</th>
+                    </tr>
+                </thead>
+            ";
+        }
+    ?>
+    <!-- Estructura de la tabla (solo cuerpo) -->
+    <?php
+    
+    echo '<tbody>';
+                    while($datos = $stmt -> fetch(PDO::FETCH_ASSOC)){
+                        echo '<tr>'; // Abrimos fila
+                        foreach ($datos as $key => $value) {
+                            echo '<td>' . $value . '</td>'; // En cada iteración pintamos un valor del array, el orden lo da el SELECT del $stmt
+                        }
+                        echo '</tr>'; //Cerramos fila
                     }
-                    echo '</tr>'; //Cerramos fila
-                }
-                // Cerramos cuerpo de la tabla
-                echo '</tbody>';
-        </table>
-        <br/>
-            <button type='submit' name='primera' id='primera'><<</button>
-            <button type='submit' name='anterior' id='anterior'><</button>
-            <input type='text' name='pagina' id='pagina' value='<?php echo $pagina ?>' disabled='false'>
-            <button type='submit' name='siguiente' id='siguiente'>></button>
-            <button type='submit' name='ultima' id='ultima'>>></button>
-            <label for='registros'>Registros por página:<select name='registros' id='registros' value='<?php echo $registros ?>'>
-                <option value='<?php echo $registros ?> ' selected hidden><?php echo $registros ?></option>
-                <option value='10'>10</option>
-                <option value='15'>15</option>
-                <option value='20'>20</option>
-                <option value='Todos'>Todos</option>
-            </select>
-            <button type='submit' name='mostrar' id='mostrar'>Mostrar</button>
-            '<p>Núm. Registros: '. $numreg . '. Página ' . $paginaActual . '/' . $paginasTotales . '</p>'
-        ";
-    }
+                    // Cerramos cuerpo de la tabla
+                    echo '</tbody>';
+            </table>
+            <br/>
+                <button type='submit' name='primera' id='primera'><<</button>
+                <button type='submit' name='anterior' id='anterior'><</button>
+                <input type='text' name='pagina' id='pagina' value='<?php echo $pagina ?>' disabled='false'>
+                <button type='submit' name='siguiente' id='siguiente'>></button>
+                <button type='submit' name='ultima' id='ultima'>>></button>
+                <label for='registros'>Registros por página:<select name='registros' id='registros' value='<?php echo $registros ?>'>
+                    <option value='<?php echo $registros ?> ' selected hidden><?php echo $registros ?></option>
+                    <option value='10'>10</option>
+                    <option value='15'>15</option>
+                    <option value='20'>20</option>
+                    <option value='Todos'>Todos</option>
+                </select>
+                <button type='submit' name='mostrar' id='mostrar'>Mostrar</button>
+                '<p>Núm. Registros: '. $numreg . '. Página ' . $paginaActual . '/' . $paginasTotales . '</p>'
+            ";
+        }
     ?>
     </form>
     <?php
