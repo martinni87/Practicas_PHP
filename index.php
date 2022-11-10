@@ -21,8 +21,8 @@
 
         //Condiciones de filtros. Se añaden si el usuario indica un valor en un filtro y son acumulativos. Definen $sql y $parametros
         if (isset($filtros["dni"]) && !empty($filtros["dni"])){
-            $sql .= " AND dni = :dni";
-            $parametros[":dni"] = $filtros["dni"];
+            $sql .= " AND dni LIKE :dni";
+            $parametros[":dni"] = "%".$filtros["dni"]."%"; //No hago que sea resultado exacto porque un usuario puede querer ver todos los dnis que tienen por ejemplo 111.
         }
         if (isset($filtros["nombre"]) && !empty($filtros["nombre"])){
             $sql .= " AND nombre LIKE :nombre";
@@ -79,11 +79,11 @@
         <fieldset>
             <legend>Filtros de búsqueda</legend>
             <label for="dni">DNI:</label><input type="text" name="dni" id="dni" placeholder="01234567A" title="Escribe un DNI">
-            <label for="nombre">Nombre:</label><input type="text" name="nombre" id="nombre" title="Escribe un nombre">
+            <label for="nombre">Nombre:</label><input type="text" name="nombre" id="nombre" placeholder="Pep" title="Escribe un nombre">
             <label for="localidad">Localidad:</label><input type="text" name="localidad" id="licalidad" placeholder="Elche" title="Escribe una localidad">
             <label for="fecha_nacimiento">F. Nacimiento:</label><input type="date" name="fecha_nacimiento" id="fecha_nacimiento" placeholder="20/05/1991" title="Escribe una fecha en formato DD/MM/AAAA">
-            <input type="submit" value="Enviar" name="enviar" id="enviar">
-            <input type="reset" value="Limpiar" name="limpiar" id="limpiar">
+            <input type="submit" value="Enviar" name="enviar" id="enviar"> <!-- Una vez presionado enviar, el formulario se resetea y no guarda valores, pero muestra la tabla con los últimos resultados -->
+            <input type="reset" value="Limpiar" name="limpiar" id="limpiar"> <!-- Borra solo los valores introducidos antes de presionar enviar -->
         </fieldset>
     </form>
 
