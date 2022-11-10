@@ -19,12 +19,16 @@
         //Creamos una variable para realizar la query. Esta variable es un String va cambiando según si el usuario usa un filtro o no
         $sql = 'SELECT dni, nombre, apellido_1, apellido_2, localidad, fecha_nacimiento FROM alumno WHERE true';
 
-        //Condiciones de filtros. Se añaden si el usuario indica un valor en un filtro y son acumulativos. Definen $sql y $parametros
+        // Vaciado de filtro cuando se presiona uno de los botones del formulario y se trata del reset.
         if ($_SERVER["REQUEST_METHOD"] === "POST"){
             if(isset($_POST["reset"])){
                 $_POST = [];
+                echo 'Reset button pressed<br/>'; // Para debug, con esto vemos un mensaje cuando se presiona el botón reset
             }
         }
+
+        //Condiciones de filtros. Se añaden si el usuario indica un valor en un filtro y son acumulativos. Definen $sql y $parametros
+
         if (isset($filtros["dni"]) && !empty($filtros["dni"])){
             $sql .= " AND dni LIKE :dni";
             $parametros[":dni"] = "%".$filtros["dni"]."%"; //No hago que sea resultado exacto porque un usuario puede querer ver todos los dnis que tienen por ejemplo 111.
@@ -87,9 +91,7 @@
             <label for="localidad">Localidad:</label><input type="text" name="localidad" id="licalidad" placeholder="Elche" title="Escribe una localidad" value="<?php echo $_POST["localidad"] ?>">
             <label for="fecha_nacimiento">F. Nacimiento:</label><input type="date" name="fecha_nacimiento" id="fecha_nacimiento" placeholder="20/05/1991" title="Escribe una fecha en formato DD/MM/AAAA" value="<?php echo $_POST["fecha_nacimiento"] ?>">
             <button type="submit" name="submit" id="submit">Enviar</button>
-            <button type="submit" name="reset" id="reset">Limpiar</button>
-            <!-- <input type="submit" value="Enviar" name="enviar" id="enviar">
-            <input type="submit" value="Limpiar" name="limpiar" id="limpiar"> -->
+            <button type="submit" name="reset" id="reset">Limpiar</button> <!-- Si aplico type submit en lugar de reset puedo variar el valor según se presiona enviar o limpiar de forma que con isset($_POST["reset"] pueda aplicar $_POST = [] y vaciar los filtros -->
         </fieldset>
     </form>
 
