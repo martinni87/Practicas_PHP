@@ -83,3 +83,11 @@ Lo vamos a hacer en el archivo index completando lo realizado en la práctica 1.
 * Para el cálculo de los registros por página se puede hacer uso de la cláusula LIMIT que facilita la obtención de los registros que necesitamos. Ejem. limit 0, 10 traerá desde el primero y un total de 10. El 10 será el valor de la opción seleccionada en el SELECT y el registro por el que vamos se calcula multiplicando la página-1 por el número de registros por página, aplicando el entero por encima. Ya que si hay 72 registros serán 8 páginas.
 * Para obtener el total de registros, teniendo en cuenta los filtros aplicados, no el LIMIT, haremos una primera consulta con COUNT *, almacenamos el valor y luego haremos la consulta para obtener los datos. Se debe utilizar la misma conexión, es decir, reutilizamos el objeto PDO iniciado al principio.+
 * Para que quede seleccionado el SELECT con la option elegida en la recarga se puede hacer en cada option, que si el valor del número de registros recogido por el POST es igual al valor del option añada la proepiedad 'selected'.
+
+## Descripción 1.6
+Esta es la última práctica y será obligatoria su presentación para todos los alumnos.
+
+En este ejercicio vamos a dotar al CRUD las acciones que le faltan como, que serán la de ***CREAR***, ***MODIFICAR*** y ***BORAR*** alumnos. Para ello vamos a añadir una nueva columna a la tabla llamada "Acciones" con dos botones por registro y un botón para insertar nuevos.
+
+También vamos a necesitar de un nuevo documento llamado form.php con los campos de alumno necesarios y tres botones de ***INSERTAR***, ***MODIFICAR***, ***CANCELAR***, que se mostrarán en función de la acción a llevar a cabo.
+
