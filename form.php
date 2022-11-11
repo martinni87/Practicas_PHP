@@ -1,5 +1,6 @@
 <?php
-    $nuevo = true;
+$button_pressed = $_GET["button_pressed"];
+echo $button_pressed ;
 
     //Atributos para PDO
     $hostdbname = 'mysql:host=localhost;dbname=universidad';
@@ -68,11 +69,16 @@
             $sql .= ') VALUES (';
             $sql .= implode($separator, $sql_values);
             $sql .= ')';
-            echo $sql;
 
-            //Statement prepare & execute
-            $stmt = $con -> prepare($sql);
-            $stmt->execute($parametros);
+            try{
+                //Statement prepare & execute. Fallará en caso de que el dni (unique & primary key) ya exista.
+                $stmt = $con -> prepare($sql);
+                $stmt->execute($parametros);
+            }
+            catch(Exception $e){
+                echo 'Error: El dni introducido ya existe.';
+            }
+            
         }
 
     //Si try falla, se lanza excepción PDO
@@ -121,7 +127,7 @@
             <label for='apellido_2'>Segundo apellido:</label><input type='text' name='apellido_2' id='apellido_2' placeholder='Godoy' title='Escribe el segundo apellido' value='<?php echo $_POST['apellido_1'] ?>'><br/>
             <label for='localidad'>Localidad:</label><input type='text' name='localidad' id='licalidad' placeholder='Elche' title='Escribe una localidad' value='<?php echo $_POST['localidad'] ?>'><br/>
             <label for='fecha_nacimiento'>F. Nacimiento:</label><input type='date' name='fecha_nacimiento' id='fecha_nacimiento' placeholder='20/05/1991' title='Escribe una fecha en formato DD/MM/AAAA' value='<?php echo $_POST['fecha_nacimiento'] ?>'><br/>
-            <button type='submit' name='submit' id='submit'><?php echo ($nuevo) ? "Insertar" : "Modificar"  ?></button>
+            <button type='submit' name='submit' id='submit'><?php echo ($button_pressed=="insertar") ? "Insertar" : "Modificar"  ?></button>
             <button type='submit' name='cancel' id='cancel'>Cancelar</button> <!-- Si aplico type submit en lugar de reset puedo variar el valor según se presiona enviar o limpiar de forma que con isset($_POST['reset'] pueda aplicar $_POST = [] y vaciar los filtros -->
         </fieldset>
     </form>

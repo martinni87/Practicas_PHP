@@ -40,7 +40,7 @@
             $parametros[':localidad'] = '%'.$_POST['localidad'].'%';
         }
         if (isset($_POST['fecha_nacimiento']) && !empty($_POST['fecha_nacimiento'])){
-            $sql_filtros .= ' AND fecha_nacimiento > :fecha_nacimiento';
+            $sql_filtros .= ' AND fecha_nacimiento >= :fecha_nacimiento';
             $parametros[':fecha_nacimiento'] = $_POST['fecha_nacimiento'];
         }
 
@@ -157,7 +157,7 @@
             <button type='submit' name='reset' id='reset'>Limpiar</button> <!-- Si aplico type submit en lugar de reset puedo variar el valor según se presiona enviar o limpiar de forma que con isset($_POST['reset'] pueda aplicar $_POST = [] y vaciar los filtros -->
         </fieldset>
         <br/>
-        <button type="button" name="nuevo_alumno" id="nuevo_alumno" onclick="location.href='./form.php'">Nuevo alumno</button>
+        <button type="button" name="nuevo_alumno" id="nuevo_alumno" onclick="location.href='./form.php?button_pressed=insertar'">Nuevo alumno</button>
     
     <!-- El resto del contenido del formulario es la estructura de la tabla y el paginador, sólo se motrará si hacemos click en Enviar -->
     <?php
@@ -187,11 +187,12 @@
             while($datos = $stmt -> fetch(PDO::FETCH_ASSOC)){
                 echo '<tr>'; // Abrimos fila
                 foreach ($datos as $key => $value) {
+                    $dni = $datos["dni"];
                     echo '<td>' . $value . '</td>'; // En cada iteración pintamos un valor del array, el orden lo da el SELECT del $stmt
                 }
                 echo '
-                    <td><button type="submit" name="elimina" id="elimina">-</button></td>
-                    <td><button type="submit" name="editar" id="editar">Editar</button></td>
+                    <td><button type="button" name="elimina" id="elimina" onclick="location.href=`./delete.php?dni='.$dni.'`">-</button></td>
+                    <td><button type="button" name="editar" id="editar" onclick="location.href=`./form.php?button_pressed=editar`">Editar</button></td>
                     </tr>'; //Cerramos fila
             }
 
