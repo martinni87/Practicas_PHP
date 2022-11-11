@@ -6,19 +6,11 @@
 
     //Hacemos un try-catch para capturar errores en caso de que la conexión falle de alguna manera.
     try{
-        //Para debug
-        // foreach ($_POST as $key => $value) {
-        //     echo $key . ' = ' . $value . '<br/>';
-        // }
-        // echo $sql;
-
-        // //Variables introducidas por el usuario. Lo heredamos del método POST
-         $filtros = $_POST;   
         //Creando conexión a Base de datos
         $con = new PDO($hostdbname,$username,$password,array(PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8')); 
         $con -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-        // Vaciado de filtro cuando se presiona uno de los botones del formulario y se trata del reset.
+        // Vaciado de filtro cuando se presiona reset. Todos los botones son tipo submit, pero su funcionamiento lo definimos según el name.
         if ($_SERVER['REQUEST_METHOD'] === 'POST'){
             if(isset($_POST['reset'])){
                 $_POST = [];
@@ -26,11 +18,13 @@
             }
         }
 
+        //Creamos una variable que recibirá la parte de filtros a aplicar en la query
+        $sql_filtros = '';
         //Array que recoge parámetros sólo si el usuario ha utilizado un determinado filtro.
         $parametros = array();
 
-        //Creamos una variable que recibirá la parte de filtros a aplicar en la query
-        $sql_filtros = '';
+        //Cargamos el valor de la página en la variable y luego vamos modificándolo con el paginador.
+        $pagina = $_POST["pagina"];
 
         //Condiciones de filtros. Se añaden si el usuario indica un valor en un filtro y son acumulativos. Definen $sql y $parametros
         if (isset($_POST['dni']) && !empty($_POST['dni'])){
@@ -50,24 +44,77 @@
             $parametros[':fecha_nacimiento'] = $_POST['fecha_nacimiento'];
         }
 
-        //Terminamos de construir la query. Si se presiona submit mostramos datos, si no, no se muestra nada.
-        if(isset($_POST['submit'])){
-            $sql = 'SELECT dni, nombre, apellido_1, apellido_2, localidad, fecha_nacimiento FROM alumno WHERE true' . $sql_filtros;
+        //Terminamos de construir la query. 
+        //Enviar y Mostrar funcionan igual, solo muestran resultados de forma directa sin más trabajo de fondo.
+        //Unica diferencia
+        if (isset($_POST['mostrar']) || isset($_POST['submit']))
+            $pagina = 1;
+
+        //Si se presiona cualquier botón que no sea Limpiar, se muestran resultados.
+        if(!isset($_POST['reset'])){
+            //Primera query para contar número total de registros en la tabla
+            $sql = 'SELECT COUNT(*) FROM alumno WHERE true'  . $sql_filtros;
             //Definimos el stmt con prepare y parametrizamos la query
             $stmt = $con -> prepare($sql);
             $stmt->execute($parametros);
-        }
-        //$sql .= $sql_filtros;
-        // //Hacemos un segundo SELECT para saber la cantidad total de registros con los filtros aplicados
-        // $sql = 'SELECT COUNT(*) FROM alumno WHERE true';
-        // $sql .= $sql_filtros;
-        // if ($_POST['registros'] != 'Todos'){
-        //     $sql .= ' LIMIT ' . $regini . ',' . $regfin;
-        // }
-        // //Definimos un nuevo stmt con prepare y parametrizamos la query
-        // $stmt = $con -> prepare($sql);
-        // $stmt->execute($parametros);
+            //Como COUNT devuelve un solo valor, usamos if en lugar de while
+            if ($datos = $stmt -> fetch()){
+                $cantidad = $datos[0];
+            }
 
+            //Definimos cantidad de registros por página. El select option indica cantidad de registros por página. Con esto y el número de página definimos un LIMIT para la query.
+            $pagreg = $_POST["pagreg"];
+            if (isset($_POST["pagreg"]) && $_POST["pagreg"] != 'Todos'){
+                if ($cantidad/$pagreg < 0){
+                    $paginasTotales = 1;
+                }
+                else{
+                    $paginasTotales = ($cantidad % $pagreg == 0) ? ($cantidad/$pagreg) : ($cantidad/$pagreg - ($cantidad % $pagreg)/$pagreg + 1) ;
+                }
+                
+            }
+            else{
+                $pagreg = 'Todos';
+                $paginasTotales = 1;
+            }
+        
+            //Los botones primera, anterior, siguiente y última, además modifican el número de la página actual.
+            
+            if (isset($_POST["primera"])){
+                $pagina = 1;
+            }
+            if (isset($_POST["anterior"])){
+                if ($pagina > 1){
+                    $pagina--;
+                }
+            }
+            if (isset($_POST["siguiente"])){
+                if ($pagina < $paginasTotales){
+                    $pagina++;
+                    echo "aumento pagina " . $pagina;
+                }
+            }
+            if (isset($_POST["ultima"])){
+                $pagina = $paginasTotales;
+            }
+
+            //Establecemos LIMIT con pagreg y pagina conocidos
+            if (isset($_POST["pagreg"]) && $_POST["pagreg"] != 'Todos'){
+                $limitini = $pagreg * ($pagina - 1);
+                $limitfin = $pagreg * $pagina;
+                $sql_limits = ' LIMIT ' . $limitini . ', ' . $limitfin;
+            }
+            else{
+                $sql_limits = "";
+            }
+
+            //Segunda query para seleccionar los datos que queremos en la tabla.
+            $sql = 'SELECT dni, nombre, apellido_1, apellido_2, localidad, fecha_nacimiento FROM alumno WHERE true' . $sql_filtros . $sql_limits;
+            //Definimos el stmt con prepare y parametrizamos la query
+            $stmt = $con -> prepare($sql);
+            $stmt->execute($parametros);
+            //Bucle while para procesar cada dato en una celda, más abajo en la estructura de tabla.
+        }
     //No cierro la llave del try aquí, va más abajo con el catch para darle continuidad y que no de error de catch sin try.
 ?>
 <!-- Cabecera del documento HTML -->
@@ -97,6 +144,7 @@
     <h2>Alumno: Martín Antonio Córdoba Getar</h2>
     <h3>Práctica 1.5 DI</h3>
 
+    <!-- El formulario con filtros de búsqueda siempre se muestra -->
     <form action='index.php' method='post'>
         <fieldset>
             <legend>Filtros de búsqueda</legend>
@@ -107,8 +155,12 @@
             <button type='submit' name='submit' id='submit'>Enviar</button>
             <button type='submit' name='reset' id='reset'>Limpiar</button> <!-- Si aplico type submit en lugar de reset puedo variar el valor según se presiona enviar o limpiar de forma que con isset($_POST['reset'] pueda aplicar $_POST = [] y vaciar los filtros -->
         </fieldset>
+    
+    <!-- El resto del contenido del formulario es la estructura de la tabla y el paginador, sólo se motrará si hacemos click en Enviar -->
     <?php 
-        if (isset($_POST['submit'])){
+        //Condición "solo si submit is set
+        if (!isset($_POST['reset'])){
+            //Si entramos, se imprime en pantalla la cabecera de la tabla
             echo "
             <p>Listado de alumnos</p>
             <!-- Estructura de la tabla (solo cabecera) -->
@@ -122,40 +174,41 @@
                         <th>Localidad</th>
                         <th>F. Nacimiento</th>
                     </tr>
-                </thead>
-            ";
-        }
-    ?>
-    <!-- Estructura de la tabla (solo cuerpo) -->
-    <?php
-    
-    echo '<tbody>';
-                    while($datos = $stmt -> fetch(PDO::FETCH_ASSOC)){
-                        echo '<tr>'; // Abrimos fila
-                        foreach ($datos as $key => $value) {
-                            echo '<td>' . $value . '</td>'; // En cada iteración pintamos un valor del array, el orden lo da el SELECT del $stmt
-                        }
-                        echo '</tr>'; //Cerramos fila
-                    }
-                    // Cerramos cuerpo de la tabla
-                    echo '</tbody>';
+                </thead>";
+            //Solo mostraremos la tabla y el paginador si se presiona el botón Enviar (submit) o la tecla enter. Continuamos el resto de la tabla (cuerpo)
+            echo '<tbody>';
+            
+            //Recorremos el array de datos y pintamos la tabla
+            while($datos = $stmt -> fetch(PDO::FETCH_ASSOC)){
+                echo '<tr>'; // Abrimos fila
+                foreach ($datos as $key => $value) {
+                    echo '<td>' . $value . '</td>'; // En cada iteración pintamos un valor del array, el orden lo da el SELECT del $stmt
+                }
+                echo '</tr>'; //Cerramos fila
+            }
+
+            // Cerramos la tabla una vez finaliza de llenarse de datos
+            echo "
+            </tbody>
             </table>
-            <br/>
-                <button type='submit' name='primera' id='primera'><<</button>
-                <button type='submit' name='anterior' id='anterior'><</button>
-                <input type='text' name='pagina' id='pagina' value='<?php echo $pagina ?>' disabled='false'>
-                <button type='submit' name='siguiente' id='siguiente'>></button>
-                <button type='submit' name='ultima' id='ultima'>>></button>
-                <label for='registros'>Registros por página:<select name='registros' id='registros' value='<?php echo $registros ?>'>
-                    <option value='<?php echo $registros ?> ' selected hidden><?php echo $registros ?></option>
-                    <option value='10'>10</option>
-                    <option value='15'>15</option>
-                    <option value='20'>20</option>
-                    <option value='Todos'>Todos</option>
-                </select>
-                <button type='submit' name='mostrar' id='mostrar'>Mostrar</button>
-                '<p>Núm. Registros: '. $numreg . '. Página ' . $paginaActual . '/' . $paginasTotales . '</p>'
-            ";
+            <br/>";
+
+            // Segunda parte del formulario (el paginador)
+            echo "
+            <button type='submit' name='primera' id='primera'><<</button>
+            <button type='submit' name='anterior' id='anterior'><</button>
+            <input type='text' name='pagina' id='pagina' value='" . $pagina . "'>
+            <button type='submit' name='siguiente' id='siguiente'>></button>
+            <button type='submit' name='ultima' id='ultima'>>></button>
+             <label for='pagreg'>Registros por página:<select name='pagreg' id='pagreg' value='" . $pagreg ."'>
+                <option value='" . $pagreg . "' selected hidden>" . $pagreg . "</option>
+                <option value='10'>10</option>
+                <option value='15'>15</option>
+                <option value='20'>20</option>
+                <option value='Todos'>Todos</option>
+            </select>
+            <button type='submit' name='mostrar' id='mostrar'>Mostrar</button>
+            <p>Núm. Registros: " . $cantidad . ". Página ". $pagina . "/" . $paginasTotales . "</p>";
         }
     ?>
     </form>
