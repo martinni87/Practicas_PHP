@@ -65,7 +65,7 @@
             //Definimos cantidad de registros por página. El select option indica cantidad de registros por página. Con esto y el número de página definimos un LIMIT para la query.
             $pagreg = $_POST["pagreg"];
             if (isset($_POST["pagreg"]) && $_POST["pagreg"] != 'Todos'){
-                if ($cantidad/$pagreg < 0){
+                if ($cantidad/$pagreg <= 0){
                     $paginasTotales = 1;
                 }
                 else{
@@ -114,6 +114,7 @@
             $stmt = $con -> prepare($sql);
             $stmt->execute($parametros);
             //Bucle while para procesar cada dato en una celda, más abajo en la estructura de tabla.
+            echo $sql;
         }
     //No cierro la llave del try aquí, va más abajo con el catch para darle continuidad y que no de error de catch sin try.
 ?>
@@ -142,7 +143,7 @@
     <!-- Títulos -->
     <h1>Práctica 1 Desarrollo de Interfaces</h1>
     <h2>Alumno: Martín Antonio Córdoba Getar</h2>
-    <h3>Práctica 1.5 DI</h3>
+    <h3>Práctica 1.6 DI</h3>
 
     <!-- El formulario con filtros de búsqueda siempre se muestra -->
     <form action='index.php' method='post'>
@@ -155,10 +156,12 @@
             <button type='submit' name='submit' id='submit'>Enviar</button>
             <button type='submit' name='reset' id='reset'>Limpiar</button> <!-- Si aplico type submit en lugar de reset puedo variar el valor según se presiona enviar o limpiar de forma que con isset($_POST['reset'] pueda aplicar $_POST = [] y vaciar los filtros -->
         </fieldset>
+        <br/>
+        <button type="button" name="nuevo_alumno" id="nuevo_alumno" onclick="location.href='./form.php'">Nuevo alumno</button>
     
     <!-- El resto del contenido del formulario es la estructura de la tabla y el paginador, sólo se motrará si hacemos click en Enviar -->
-    <?php 
-        //Condición "solo si submit is set
+    <?php
+        //Condición solo si submit is set
         if (!isset($_POST['reset'])){
             //Si entramos, se imprime en pantalla la cabecera de la tabla
             echo "
@@ -173,10 +176,12 @@
                         <th>Apellido 2</th>
                         <th>Localidad</th>
                         <th>F. Nacimiento</th>
+                        <th colspan='2'>Acciones</th>"; //Añadimos aquí la cabecera de la nueva columna de acciones con longitud 2 columnas.
+            //Continuamos la tabla...
+            echo "
                     </tr>
-                </thead>";
-            //Solo mostraremos la tabla y el paginador si se presiona el botón Enviar (submit) o la tecla enter. Continuamos el resto de la tabla (cuerpo)
-            echo '<tbody>';
+                </thead>
+                <tbody>"; //Inicia cuerpo de tabla
             
             //Recorremos el array de datos y pintamos la tabla
             while($datos = $stmt -> fetch(PDO::FETCH_ASSOC)){
@@ -184,7 +189,10 @@
                 foreach ($datos as $key => $value) {
                     echo '<td>' . $value . '</td>'; // En cada iteración pintamos un valor del array, el orden lo da el SELECT del $stmt
                 }
-                echo '</tr>'; //Cerramos fila
+                echo '
+                    <td><button type="submit" name="elimina" id="elimina">-</button></td>
+                    <td><button type="submit" name="editar" id="editar">Editar</button></td>
+                    </tr>'; //Cerramos fila
             }
 
             // Cerramos la tabla una vez finaliza de llenarse de datos
