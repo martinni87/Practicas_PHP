@@ -28,33 +28,33 @@
 
         //Si está seteado, lo añadimos a los values de la query y lo parametrizamos.
         if (isset($_POST['dni']) && !empty($_POST['dni'])){
-            $sql_columns = 'dni';
-            $sql_values = ':dni';
+            $sql_columns[] = 'dni';
+            $sql_values[] = ':dni';
             $parametros[':dni'] = $_POST['dni'];
         }
         if (isset($_POST['nombre']) && !empty($_POST['nombre'])){
-            $sql_columns = 'dni';
-            $sql_values = ':nombre';
+            $sql_columns[] = 'nombre';
+            $sql_values[] = ':nombre';
             $parametros[':nombre'] = $_POST['nombre'];
         }
         if (isset($_POST['apellido_1']) && !empty($_POST['apellido_1'])){
-            $sql_columns = 'dni';
-            $sql_values = ':apellido_1';
+            $sql_columns[] = 'apellido_1';
+            $sql_values[] = ':apellido_1';
             $parametros[':apellido_1'] = $_POST['apellido_1'];
         }
         if (isset($_POST['apellido_2']) && !empty($_POST['apellido_2'])){
-            $sql_columns = 'dni';
-            $sql_values = ':apellido_2';
+            $sql_columns[] = 'apellido_2';
+            $sql_values[] = ':apellido_2';
             $parametros[':apellido_2'] = $_POST['apellido_2'];
         }
         if (isset($_POST['localidad']) && !empty($_POST['localidad'])){
-            $sql_columns = 'dni';
-            $sql_values = ':dni';
-            $parametros[':dni'] = $_POST['dni'];
+            $sql_columns[] = 'localidad';
+            $sql_values[] = ':localidad';
+            $parametros[':localidad'] = $_POST['localidad'];
         }
         if (isset($_POST['fecha_nacimiento']) && !empty($_POST['fecha_nacimiento'])){
-            $sql_columns = 'dni';
-            $sql_values = ':fecha_nacimiento';
+            $sql_columns[] = 'fecha_nacimiento';
+            $sql_values[] = ':fecha_nacimiento';
             $parametros[':fecha_nacimiento'] = $_POST['fecha_nacimiento'];
         }
 
@@ -64,15 +64,15 @@
             $separator = ",";
 
             //Concatenamos para construir la query completa
-            // $sql .= implode($separator,$sql_columns);
+            $sql .= implode($separator,$sql_columns);
             $sql .= ') VALUES (';
-            // $sql .= implode($separator, $sql_values);
+            $sql .= implode($separator, $sql_values);
             $sql .= ')';
             echo $sql;
 
             //Statement prepare & execute
-            // $stmt = $con -> prepare($sql);
-            // $stmt->execute($parametros);
+            $stmt = $con -> prepare($sql);
+            $stmt->execute($parametros);
         }
 
     //Si try falla, se lanza excepción PDO
