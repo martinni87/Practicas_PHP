@@ -69,13 +69,13 @@ Lo vamos a hacer en el archivo index completando lo realizado en la práctica 1.
 
 ![Ejemplo1.5](./img/pic_ejemplo_1_5.JPG 'Ejemplo 1.5.')
 
-### Acciones del paginador
+### Acciones del paginador
 
-* <<. Nos carga la primera página teniendo en cuenta el filtro aplicado y el número de registros por página. Será un botón submit con name = 'primera'.
-* <. Cargará la página anterior a la que estamos, siempre que se pueda. Será un botón submit con name = 'anterior'.
-* >. Cargará la página siguiente a la que estemos, siempre que se pueda. Será un botón submit con name = 'siguiente'.
-* >>. Nos carga la última página teniendo en cuenta el filtro aplicado y el número de registros por página. Será un select con los valores de 10, 15, 20 y todos estos datos también serán su value.
-* Mostrar. Será un botón de tipo submit con name = 'mostrar' que, además de enviar el formulario, pondrá la página a 1.
+* [<<] Nos carga la primera página teniendo en cuenta el filtro aplicado y el número de registros por página. Será un botón submit con name = 'primera'.
+* [<] Cargará la página anterior a la que estamos, siempre que se pueda. Será un botón submit con name = 'anterior'.
+* [>] Cargará la página siguiente a la que estemos, siempre que se pueda. Será un botón submit con name = 'siguiente'.
+* [>>] Nos carga la última página teniendo en cuenta el filtro aplicado y el número de registros por página. Será un select con los valores de 10, 15, 20 y todos estos datos también serán su value.
+* [Mostrar]. Será un botón de tipo submit con name = 'mostrar' que, además de enviar el formulario, pondrá la página a 1.
 
 ### Aclaraciones y recomendaciones
 * El formulario contendrá todo, desde los filtros al paginador, con objeto de enviar y poder recoger todos los valores necesarios en la petición.
@@ -91,3 +91,47 @@ En este ejercicio vamos a dotar al CRUD las acciones que le faltan como, que ser
 
 También vamos a necesitar de un nuevo documento llamado form.php con los campos de alumno necesarios y tres botones de ***INSERTAR***, ***MODIFICAR***, ***CANCELAR***, que se mostrarán en función de la acción a llevar a cabo.
 
+![Ejemplo1.6.1](./img/pic_ejemplo_1_6_1.JPG 'Ejemplo 1.6.1')
+
+![Ejemplo1.6.2](./img/pic_ejemplo_1_6_2.JPG 'Ejemplo 1.6.2')
+
+### Acciones de los botones
+
+* [-] Elimina el registro pulsado.
+* [Nuevo alumno] abre un nuevo documento con un formulario vacío que permite insertar un nuevo registro.
+* [Editar] abre un formulario anterior con los datos del registro sobre el que hemos pulsado para poder actualizar los datos en BD.
+* [Insertar] crea un nuevo registro en la BD. Será un botón submit con name = "Insert".
+* [Modificar] Modifica el alumno en BD. Será un botón submit con name = "Update".
+* [Cancelar] Borra los datos del formulario. Será un botón de tipo reset.
+
+Se define INSERTAR y MODIFICAR porque permitiría duplicar un registro alterando algunos datos.
+
+### Aclaraciones y recomendaciones.
+
+* Para no complicar en exceso la práctica se puede utilizar algunas funciones de JavaScript que faciliten las acciones de borrar, modificar y eliminar.
+* En el caso de eliminar en lugar de ser botón submit, será un botón con un nuevo evento onClick, llamando a una función definida en el HEAD del documento. Ejemplo onclick"delete_alumno("00001");
+* En la función JavaScript daremos valor a un elemento creado de tipo hedden que contenga el dni del alumno a borrar y hacemos el submit, de tal manera que al hacer el submit se enviará este valor y al recargar la página si este elemento contiene valor , realizamos la acción de borrado. ejemplo:
+
+```js
+document.getElementById("alumno_deleted").value = dni; // donde dni es el parámetro pasado a la función de JavaScript.
+document.getElementById("formulario").submit();
+```
+
+Para llevar a cabo estas acciones tenemos que definir un ID a los elementos afectados.
+En el caso de la inserción, usaremos también una función javascript para abrir el documento del formulario vacío. Ejemplo:
+```js
+window.open("form.php","_self");
+```
+En el formulario, una vez rellenados los campos pulsaremos sobre el botón submit INSERTAR, siguiendo el mismo procedimiento que en el listado. Recogemos los valores del POST y montamos la query correspondiente tal como el ejemplo de moodle.
+
+Para el caso de la modificación necesitamos enviar a form.php el dni del allumno a modificar, por lo que se lo pasaremos por la URL y lo recogeremos con GET. Ejemplo:
+
+```js
+window.open("form.php?dni="+dni,"_self"); //donde dni es el parámetro pasado a la función javascript
+```
+
+En la carga identificamos que me han pasado un DNI, hacemos la consulta a la BD para obtener el alumno y lrellenamos los campos correspondientes.
+
+Si el usuario pulsa sobre el botón submit Modificar, recogeremos este valor para realizar la acción correspondiente.
+
+Se valorará muy positivamente el uso de CSS o Bootstrap para dejar una interfaz limpia e intuitiva.
