@@ -1,6 +1,6 @@
 <?php
-    $button_pressed = $_GET["button_pressed"]; //Puede ser insertar o editar
-    $dni = $_GET["dni"]; //Paso valor por URL
+    $button_pressed = $_GET["button_pressed"]; //Puede ser Insertar o Editar
+    $dni = $_GET["dni"]; //Paso valor por URL el valor del dni del registro que quiere modificarse
 
     //Atributos para PDO
     $hostdbname = 'mysql:host=localhost;dbname=universidad';
@@ -61,6 +61,7 @@
 
         //Query si se selecciona nuevo alumno
         if (isset($_POST["Insertar"])){
+            $button_pressed=="Insertar"; //Lo mantenemos para que no se pierda al recargar la página
             $sql = 'INSERT INTO alumno (';
             $separator = ",";
 
@@ -78,36 +79,46 @@
             catch(Exception $e){
                 echo 'Error: El dni introducido ya existe.';
             }
-            
         }
-        //Carga de datos si se selecciona editar
-        else if ($button_pressed == "Editar"){
-            $sql = 'SELECT dni,nombre,apellido_1,apellido_2,localidad,fecha_nacimiento FROM alumno WHERE dni = '.$dni;
+        
+        //Query que carga datos existentes
+        if ($button_pressed == "Editar"){
+            $parametros["dni"] = $dni;
+            $sql = 'SELECT dni,nombre,apellido_1,apellido_2,localidad,fecha_nacimiento FROM alumno WHERE dni =:dni';
             $stmt = $con -> prepare($sql);
-            $stmt->execute();
+            $stmt->execute($parametros);
             $_POST = $stmt -> fetch(); //Sobreescribo $_POST para mostrar los valores en cada celda con el resultado de la query
+            $button_pressed=="Editar"; //Lo mantenemos para que no se pierda al recargar la página
         }
 
+        //Query para editar valores de registro existente
         if (isset($_POST["Editar"])){
-            $dni = $_POST["dni"];
-            $nombre = $_POST["nombre"];
-            $apellido_1 = $_POST["apellido_1"];
-            $apellido_2 = $_POST["apellido_2"];
-            $localidad = $_POST["localidad"];
-            $fecha_nacimiento = $_POST["fecha_nacimiento"];
-            $sql = `UPDATE alumno
-                    SET nombre = $nombre, apellido_1 = $apellido_1, apellido_2 = $apellido_2,
-                    localidad = $localidad, fecha_nacimiento = $fecha_nacimiento
-                    WHERE dni =  $dni`;
+            $button_pressed=="Editar"; //Lo mantenemos para que no se pierda al recargar la página
+            try{
+                $parametros[':dni'] = $_POST['dni'];
+                $parametros[':nombre'] = $_POST['nombre'];
+                $parametros[':apellido_1'] = $_POST['apellido_1'];
+                $parametros[':apellido_2'] = $_POST['apellido_2'];
+                $parametros[':localidad'] = $_POST['localidad'];
+                $parametros[':fecha_nacimiento'] = $_POST['fecha_nacimiento'];
 
-            
+                $sql = 'UPDATE alumno
+                        SET nombre = :nombre, apellido_1 = :apellido_1, apellido_2 = :apellido_2,
+                        localidad = :localidad, fecha_nacimiento = :fecha_nacimiento
+                        WHERE dni =  :dni';
+
+                $stmt = $con -> prepare($sql);
+                $stmt->execute($parametros);
+            }
+            catch (Exception $e){
+                echo 'Error: Hubo un problema en la carga, revise los datos.';
+            }
         }
 
     //Si try falla, se lanza excepción PDO
     }catch(PDOException $e){
         echo 'Error en la conexión a la BD: ' . $e -> getMessage();
     }
-    echo $sql;
 ?>
 
 <!-- Cabecera del documento HTML -->
@@ -142,7 +153,7 @@
 
     <!-- Formulario genérico -->
     <?php
-    $valor_boton = ($button_pressed=="Insertar") ? "Insertar" : "Modificar";
+    $valor_boton = ($button_pressed=="Insertar") ? "Insertar" : "Editar";
     ?>
 
     <form action='./form.php' method='post'>
@@ -153,8 +164,7 @@
             <label for='apellido_1'>Primer apellido:</label><input type='text' name='apellido_1' id='apellido_1' placeholder='Martinez' title='Escribe el primer apellido' value='<?php echo $_POST['apellido_1'] ?>'><br/>
             <label for='apellido_2'>Segundo apellido:</label><input type='text' name='apellido_2' id='apellido_2' placeholder='Godoy' title='Escribe el segundo apellido' value='<?php echo $_POST['apellido_2'] ?>'><br/>
             <label for='localidad'>Localidad:</label><input type='text' name='localidad' id='licalidad' placeholder='Elche' title='Escribe una localidad' value='<?php echo $_POST['localidad'] ?>'><br/>
-            <label for='fecha_nacimiento'>F. Nacimiento:</label><input type='date' name='fecha_nacimiento' id='fecha_nacimiento' placeholder='20/05/1991' title='Escribe una fecha en formato DD/MM/AAAA' value='<?php echo $_POST['fecha_nacimiento'] ?>'><br/>
-            <?php echo $valor_boton; ?>
+            <label for='fecha_nacimiento'>F. Nacimiento:</label><input type='date' name='fecha_nacimiento' id='fecha_nacimiento' placeholder='20/05/1991' title='Escribe una fecha en formato DD/MM/AAAA' value='<?php echo ($_POST['fecha_nacimiento'] == null) ? '2000-01-01' : $_POST['fecha_nacimiento'] ?>'><br/>
             <button type='submit' name='<?php echo $valor_boton ?>' id='<?php echo $valor_boton ?>'><?php echo $valor_boton ?></button> <!-- Botón insertar/modificar -->
             <button type='submit' name='cancel' id='cancel'>Cancelar</button> <!-- Si aplico type submit en lugar de reset puedo variar el valor según se presiona enviar o limpiar de forma que con isset($_POST['reset'] pueda aplicar $_POST = [] y vaciar los filtros -->
         </fieldset>

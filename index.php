@@ -114,7 +114,6 @@
             $stmt = $con -> prepare($sql);
             $stmt->execute($parametros);
             //Bucle while para procesar cada dato en una celda, más abajo en la estructura de tabla.
-            echo $sql;
         }
     //No cierro la llave del try aquí, va más abajo con el catch para darle continuidad y que no de error de catch sin try.
 ?>
