@@ -157,7 +157,7 @@
             <button type='submit' name='reset' id='reset'>Limpiar</button> <!-- Si aplico type submit en lugar de reset puedo variar el valor según se presiona enviar o limpiar de forma que con isset($_POST['reset'] pueda aplicar $_POST = [] y vaciar los filtros -->
         </fieldset>
         <br/>
-        <button type="button" name="nuevo_alumno" id="nuevo_alumno" onclick="location.href='./form.php?button_pressed=insertar'">Nuevo alumno</button>
+        <button type="button" name="nuevo_alumno" id="nuevo_alumno" onclick="location.href='./form.php?button_pressed=Insertar'">Nuevo alumno</button>
     
     <!-- El resto del contenido del formulario es la estructura de la tabla y el paginador, sólo se motrará si hacemos click en Enviar -->
     <?php
@@ -192,7 +192,7 @@
                 }
                 echo '
                     <td><button type="button" name="elimina" id="elimina" onclick="location.href=`./delete.php?dni='.$dni.'`">-</button></td>
-                    <td><button type="button" name="editar" id="editar" onclick="location.href=`./form.php?button_pressed=editar`">Editar</button></td>
+                    <td><button type="button" name="editar" id="editar" onclick="location.href=`./form.php?button_pressed=Editar&dni='.$dni.'`">Editar</button></td>
                     </tr>'; //Cerramos fila
             }
 

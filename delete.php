@@ -1,7 +1,5 @@
 <?php
-
 $dni = $_GET["dni"];
-// echo $dni;
 
 //Atributos para PDO
 $hostdbname = 'mysql:host=localhost;dbname=universidad';
@@ -15,7 +13,7 @@ try{
     $con -> setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     //Query
-    $sql = 'DELETE FROM alumno WHERE dni = ' .$dni;
+    $sql = 'DELETE FROM alumno WHERE dni=' .$dni;
 
     //Statement prepare & execute.
     $stmt = $con -> prepare($sql);
